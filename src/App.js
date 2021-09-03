@@ -1,25 +1,59 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import styled from "styled-components";
+import { GlobalStyle } from "./theme/GlobalStyles";
+import ShopList from "./components/ShopList/ShopList";
+import AddNewShop from "./components/AddNewShop/AddNewShop";
+import FilterBar from "./components/FilterBar/FilterBar";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+// redux imports
+import { useSelector, useDispatch } from "react-redux";
+import { uiActions } from "./store/ui-slice";
+
+const AppWrapper = styled.div`
+  background-color: #253b4d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+`;
+
+const App = () => {
+  const dispatch = useDispatch();
+
+  const addNewShopIsVisible = useSelector(
+    (state) => state.ui.addNewShopVisible
   );
-}
+
+  const filterMenuIsVisible = useSelector(
+    (state) => state.ui.filterMenuVisible
+  );
+
+  const toggleAddNewShopHandler = () => {
+    dispatch(uiActions.toggleAddNewShop());
+  };
+  const toggleFilterMenuHandler = () => {
+    dispatch(uiActions.toggleFilterMenu());
+    dispatch(uiActions.toggleAddNewShop());
+  };
+
+  return (
+    <>
+      <GlobalStyle />
+      <AppWrapper>
+        {addNewShopIsVisible ? (
+          <AddNewShop />
+        ) : (
+          <button onClick={toggleAddNewShopHandler}>Add New Shop</button>
+        )}
+        {filterMenuIsVisible ? (
+          <FilterBar />
+        ) : (
+          <button onClick={toggleFilterMenuHandler}>Show Filter Menu</button>
+        )}
+        <ShopList />
+      </AppWrapper>
+    </>
+  );
+};
 
 export default App;
